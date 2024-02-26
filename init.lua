@@ -1,7 +1,7 @@
 
 tenent_timetravel={}
 
-tenent_timetravel.update_interval=0.1
+tenent_timetravel.update_interval=0.2
 
 tenent_timetravel.current_time=0
 tenent_timetravel.time_rate=1
