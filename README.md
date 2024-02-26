@@ -1,10 +1,15 @@
 # Tenent Timetravel
 
-A minetest mod for reversing the flow of time.
+A minetest mod for reversing the flow of time. Reverse time at will.
 
 # Limitations
 
-Currently, only the player and any placed/dug nodes are recorded and replayed during timetravel. Perhaps in the future, reversing entites or other game parameters such as the sky may be added.
+Currently, only the following things are saved and replayed during timetravel:
+
+- Player (pos, yaw, and animation)
+- Nodes (only when placed/dug; falling nodes and voxelmanip are not saved)
+
+Perhaps in the future, reversing entites or other game parameters such as the sky may be added.
 
 # Usage
 
