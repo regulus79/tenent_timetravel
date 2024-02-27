@@ -6,11 +6,12 @@ tenent_timetravel.update_interval=0.2
 tenent_timetravel.current_time=0
 tenent_timetravel.time_rate=1
 
-effects=dofile(minetest.get_modpath("tenent_timetravel").."/effects.lua")
+local effects=dofile(minetest.get_modpath("tenent_timetravel").."/effects.lua")
 
 tenent_timetravel.update_scripts={
     player=dofile(minetest.get_modpath("tenent_timetravel").."/player.lua"),
-    nodes=dofile(minetest.get_modpath("tenent_timetravel").."/nodes.lua")
+    nodes=dofile(minetest.get_modpath("tenent_timetravel").."/nodes.lua"),
+    reverser=dofile(minetest.get_modpath("tenent_timetravel").."/reverser.lua"),
 }
 
 
@@ -23,7 +24,7 @@ minetest.register_entity("tenent_timetravel:tenent_dummy",{
     on_step=function(self,dtime)
         local update_interval=tenent_timetravel.update_interval
         local time=tenent_timetravel.current_time
-        rounded_time=update_interval*math.floor(time/update_interval+0.5)
+        local rounded_time=update_interval*math.floor(time/update_interval+0.5)
         if not self._timeline then
             self.object:remove()
             return
@@ -74,14 +75,17 @@ minetest.register_entity("tenent_timetravel:tenent_dummy",{
 })
 
 
+tenent_timetravel.reverse=function()
+    tenent_timetravel.time_rate=tenent_timetravel.time_rate*-1
+    for _,update_script in pairs(tenent_timetravel.update_scripts) do
+        update_script.reverse()
+    end
+end
+
 minetest.register_chatcommand("reverse",{
     description="Reverse Time",
     func=function(name)
-        local player=minetest.get_player_by_name(name)
-        tenent_timetravel.time_rate=tenent_timetravel.time_rate*-1
-        for _,update_script in pairs(tenent_timetravel.update_scripts) do
-            update_script.reverse()
-        end
+        tenent_timetravel.reverse()
     end
 })
 
@@ -89,10 +93,7 @@ minetest.register_craftitem("tenent_timetravel:reverse",{
     description="Reverse Time",
     inventory_image="reverse_item.png",
     on_use=function(itemstack,user)
-        tenent_timetravel.time_rate=tenent_timetravel.time_rate*-1
-        for _,update_script in pairs(tenent_timetravel.update_scripts) do
-            update_script.reverse()
-        end
+        tenent_timetravel.reverse()
     end
 })
 

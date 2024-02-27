@@ -5,6 +5,9 @@ local update_script={}
 update_script.timeline={}
 
 minetest.register_on_dignode(function(pos,oldnode,digger)
+    if oldnode.name=="tenent_timetravel:reverser" then
+        return
+    end
     local update_interval=tenent_timetravel.update_interval
     rounded_time=update_interval*math.floor(tenent_timetravel.current_time/update_interval+0.5)
     minetest.after(tenent_timetravel.update_interval, function()
@@ -25,6 +28,9 @@ minetest.register_on_dignode(function(pos,oldnode,digger)
 end)
 
 minetest.register_on_placenode(function(pos,newnode,placer,oldnode)
+    if newnode.name=="tenent_timetravel:reverser" then
+        return
+    end
     local update_interval=tenent_timetravel.update_interval
     rounded_time=update_interval*math.floor(tenent_timetravel.current_time/update_interval+0.5)
     minetest.after(tenent_timetravel.update_interval, function()
@@ -46,7 +52,7 @@ end)
 
 
 update_script.update=function(rounded_time)
-    nodechanges=update_script.timeline[rounded_time]
+    local nodechanges=update_script.timeline[rounded_time]
     if nodechanges then
         if tenent_timetravel.time_rate>0 then
             for _,nodechange in pairs(nodechanges) do
