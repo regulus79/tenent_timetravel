@@ -23,7 +23,6 @@ minetest.register_node("tenent_timetravel:reverser",{
     paramtype2="4dir",
     after_place_node=function(pos,placer,itemstack)
         local place_dir_horizontal=minetest.fourdir_to_dir(minetest.get_node(pos).param2):cross(vector.new(0,1,0))
-        minetest.debug(place_dir_horizontal)
         --minetest.set_node(pos+place_dir_horizontal,{name="default:dirt"})
         --minetest.set_node(pos-place_dir_horizontal,{name="default:dirt"})
         minetest.add_entity(pos+place_dir_horizontal*2,"tenent_timetravel:reverser_rotater",minetest.serialize({
@@ -93,7 +92,6 @@ minetest.register_entity("tenent_timetravel:reverser_rotater",{
             if time_until>0 and time_until<math.pi/2 then
                 is_timeline_event_soon=true
             end
-            --minetest.debug("hey",i,time,(time-tenent_timetravel.current_time)*tenent_timetravel.time_rate,is_timeline_event_soon)
         end
 
         if (self._player_in_range or player_in_range_of_other or is_timeline_event_soon) and not self._just_finished  then
@@ -118,12 +116,10 @@ minetest.register_entity("tenent_timetravel:reverser_rotater",{
             if player:get_pos():distance(self.object:get_pos())<2 and self._other and not self._other:get_luaentity()._just_finished then
                 tenent_timetravel.reverse()
                 player:set_pos(player:get_pos()-self.object:get_pos()+self._other:get_pos())
-                minetest.debug("teleported")
                 self._just_finished=true
                 self._other:get_luaentity()._just_finished=true
                 table.insert(self._timeline,tenent_timetravel.current_time)
                 table.insert(self._other:get_luaentity()._timeline,tenent_timetravel.current_time)
-                minetest.debug(dump(self._timeline))
             end
         end
         self.object:set_rotation(vector.new(0,self._starting_angle+self._current_angle,0))
